@@ -9,6 +9,7 @@ class Settings(object):
         home = os.path.expanduser("~")
         self.data = {}
         self.path = os.path.join(home, '.labelImgSettings.pkl')
+        print(self.path)
 
     def __setitem__(self, key, value):
         self.data[key] = value
@@ -23,6 +24,7 @@ class Settings(object):
 
     def save(self):
         if self.path:
+            print("...saving...")
             with open(self.path, 'wb') as f:
                 pickle.dump(self.data, f, pickle.HIGHEST_PROTOCOL)
                 return True
@@ -43,4 +45,4 @@ class Settings(object):
             os.remove(self.path)
             print('Remove setting pkl file ${0}'.format(self.path))
         self.data = {}
-        self.path = None
+        #self.path = None

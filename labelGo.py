@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
 import argparse
 import codecs
@@ -87,9 +87,10 @@ class MainWindow(QMainWindow, WindowMixin):
         self.setStyleSheet("background-color:white")
         # Load setting in the main thread
         self.settings = Settings()
+        print("Loading settings...")
         self.settings.load()
         settings = self.settings
-        self.settings.reset()
+        #self.settings.reset()
         self.os_name = platform.system()
 
         # Load string bundle for i18n
@@ -1271,6 +1272,7 @@ class MainWindow(QMainWindow, WindowMixin):
         settings[SETTING_PAINT_LABEL] = self.display_label_option.isChecked()
         settings[SETTING_DRAW_SQUARE] = self.draw_squares_option.isChecked()
         settings[SETTING_LABEL_FILE_FORMAT] = self.label_file_format
+        print("Saving settings...")
         settings.save()
 
     def load_recent(self, filename):
@@ -1343,13 +1345,13 @@ class MainWindow(QMainWindow, WindowMixin):
 
 
     def auto_label(self):
-        attention_get = QMessageBox.question(self, 'Attention', 'This operation will clear all the original annotation files. Click Yes to select the yolov5 weight and continue.此操作将会清除所有的原有标注文件，点击Yes以选择YOLOv5权重并继续。', QMessageBox.Yes | QMessageBox.No)  # 创建一个二次确认框
+        attention_get = QMessageBox.question(self, 'Attention', 'This operation will clear all the original annotation files. Click Yes to select the yolov5 weight and continue.', QMessageBox.Yes | QMessageBox.No)  # 创建一个二次确认框
         if attention_get == QMessageBox.Yes:
             if not self.last_open_dir:
                 self.last_open_dir='./images'
             weight_path = QFileDialog.getOpenFileName(self,
                                                       "getOpenFileName", "./",
-                                                      "Weight Files (*.pt)")
+                                                      "Weight Files (*.*)")
             if not weight_path[0]:
                 return
             for files in os.walk(self.last_open_dir):
@@ -1361,10 +1363,10 @@ class MainWindow(QMainWindow, WindowMixin):
             parser.add_argument('--weights', nargs='+', type=str, default=weight_path[0], help='model.pt path(s)')
             parser.add_argument('--source', type=str, default=self.last_open_dir, help='file/dir/URL/glob, 0 for webcam')
             parser.add_argument('--imgsz', '--img', '--img-size', type=int, default=640, help='inference size (pixels)')
-            parser.add_argument('--conf-thres', type=float, default=0.25, help='confidence threshold')
-            parser.add_argument('--iou-thres', type=float, default=0.45, help='NMS IoU threshold')
+            parser.add_argument('--conf-thres', type=float, default=0.75, help='confidence threshold')
+            parser.add_argument('--iou-thres', type=float, default=0.4, help='NMS IoU threshold')
             parser.add_argument('--max-det', type=int, default=1000, help='maximum detections per image')
-            parser.add_argument('--device', default='', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
+            parser.add_argument('--device', default='cpu', help='cuda device, i.e. 0 or 0,1,2,3 or cpu')
             parser.add_argument('--view-img', action='store_true', help='show results')
             parser.add_argument('--save-txt', action='store_true', help='save results to *.txt', default='true')
             parser.add_argument('--save-conf', action='store_true', help='save confidences in --save-txt labels')
